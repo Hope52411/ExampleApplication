@@ -1,0 +1,31 @@
+version: 2.1  # 指定 CircleCI 配置文件的版本
+
+workflows:
+  version: 2  # 定义工作流的版本
+  build:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - main  # 仅在 main 分支触发
+
+jobs:
+  build:
+    working_directory: ~/ExampleApplication  # 设置工作目录
+    docker:
+      - image: circleci/node:10.16.3  # 使用 Node.js 10.16.3 Docker 镜像
+    steps:
+      - checkout  # 从 GitHub 拉取代码
+      - run:
+          name: update-npm  # 更新 npm
+          command: 'sudo npm install -g npm@5'
+      - restore_cache:  # 恢复缓存
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: install-npm  # 安装依赖
+          command: npm install
+      - save_cache:  # 保存缓存
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
