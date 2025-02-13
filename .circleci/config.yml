@@ -27,7 +27,7 @@ jobs:
           command: npm install
       - run:
           name: test-run
-          command: npm run tests
+          command: npm run test
       - save_cache: 
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
