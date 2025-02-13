@@ -14,7 +14,7 @@ jobs:
   build:
     working_directory: ~/ExampleApplication-20250204
     docker:
-      - image: node:18  # ✅ Use an official and supported Node.js version
+      - image: node:22.1.0
     steps:
       - checkout
       - run:
