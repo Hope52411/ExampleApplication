@@ -19,7 +19,7 @@ jobs:
       - checkout
       - run:
           name: Update npm
-          command: 'npm install -g npm@latest'  # ✅ Update to latest npm
+          command: 'npm install -g npm@10.7.0'  # ✅ Update to latest npm
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
