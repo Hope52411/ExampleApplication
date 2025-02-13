@@ -23,7 +23,7 @@ jobs:
       - restore_cache:  # 恢复缓存
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
-          name: install-npm  # 安装依赖
+          name: npm-install
           command: npm install
       - run:
           name: test-run
