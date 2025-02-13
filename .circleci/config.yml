@@ -12,9 +12,9 @@ workflows:
 
 jobs:
   build:
-    working_directory: ~/ExampleApplication  # 设置工作目录
+    working_directory: ~/ExampleApplication 
     docker:
-      - image: circleci/node:10.16.3  # 使用 Node.js 10.16.3 Docker 镜像
+      - image: circleci/node:10.16.3  
     steps:
       - checkout  # 从 GitHub 拉取代码
       - run:
@@ -28,7 +28,7 @@ jobs:
       - run:
           name: test-run
           command: npm run tests
-      - save_cache:  # 保存缓存
+      - save_cache: 
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - ./node_modules
