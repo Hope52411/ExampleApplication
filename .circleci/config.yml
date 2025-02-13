@@ -1,4 +1,4 @@
-version: 2.1  # 指定 CircleCI 配置文件的版本
+version: 2.1  
 
 workflows:
   version: 2  # 定义工作流的版本
