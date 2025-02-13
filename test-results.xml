@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="0.0000" tests="10" failures="0">
+  <testsuite name="Root Suite" timestamp="2025-02-13T12:25:13" tests="0" time="0.0000" failures="0">
+  </testsuite>
+  <testsuite name="utils" timestamp="2025-02-13T12:25:13" tests="0" file="D:\NCICourse\DevOpsSec\ExampleApplication-20250204\ExampleApplication\test\test_utils.js" time="0.0000" failures="0">
+  </testsuite>
+  <testsuite name="#add()" timestamp="2025-02-13T12:25:13" tests="2" file="D:\NCICourse\DevOpsSec\ExampleApplication-20250204\ExampleApplication\test\test_utils.js" time="0.0000" failures="0">
+    <testcase name="utils #add() should return 2 when 1 and 1 is added" time="0.0000" classname="should return 2 when 1 and 1 is added">
+    </testcase>
+    <testcase name="utils #add() should return 37 when 15 and 22 is added" time="0.0000" classname="should return 37 when 15 and 22 is added">
+    </testcase>
+  </testsuite>
+  <testsuite name="#multiply()" timestamp="2025-02-13T12:25:13" tests="2" file="D:\NCICourse\DevOpsSec\ExampleApplication-20250204\ExampleApplication\test\test_utils.js" time="0.0000" failures="0">
+    <testcase name="utils #multiply() should return 4 when 2 and 2 is multiplied" time="0.0000" classname="should return 4 when 2 and 2 is multiplied">
+    </testcase>
+    <testcase name="utils #multiply() should return 49 when 7 and 7 is multiplied" time="0.0000" classname="should return 49 when 7 and 7 is multiplied">
+    </testcase>
+  </testsuite>
+  <testsuite name="#subtract()" timestamp="2025-02-13T12:25:13" tests="3" file="D:\NCICourse\DevOpsSec\ExampleApplication-20250204\ExampleApplication\test\test_utils.js" time="0.0000" failures="0">
+    <testcase name="utils #subtract() should return -4 when 4 and 8 is subtracted" time="0.0000" classname="should return -4 when 4 and 8 is subtracted">
+    </testcase>
+    <testcase name="utils #subtract() should return 12 when 4 and -8 is subtracted" time="0.0000" classname="should return 12 when 4 and -8 is subtracted">
+    </testcase>
+    <testcase name="utils #subtract() should return 1 when 2 and 1 is subtracted" time="0.0000" classname="should return 1 when 2 and 1 is subtracted">
+    </testcase>
+  </testsuite>
+  <testsuite name="#divide()" timestamp="2025-02-13T12:25:13" tests="3" file="D:\NCICourse\DevOpsSec\ExampleApplication-20250204\ExampleApplication\test\test_utils.js" time="0.0000" failures="0">
+    <testcase name="utils #divide() should return 4 when 8 and 2 is divided" time="0.0000" classname="should return 4 when 8 and 2 is divided">
+    </testcase>
+    <testcase name="utils #divide() should return 1 when 1 and 1 is divided" time="0.0000" classname="should return 1 when 1 and 1 is divided">
+    </testcase>
+    <testcase name="utils #divide() should return 0 when 1 and 0 is divided" time="0.0000" classname="should return 0 when 1 and 0 is divided">
+    </testcase>
+  </testsuite>
+</testsuites>
