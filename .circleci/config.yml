@@ -1,14 +1,14 @@
 version: 2.1  
 
 workflows:
-  version: 2  # 定义工作流的版本
+  version: 2
   build:
     jobs:
       - build:
           filters:
             branches:
               only:
-                - main  # 仅在 main 分支触发
+                - main 
 
 jobs:
   build:
@@ -16,14 +16,14 @@ jobs:
     docker:
       - image: circleci/node:10.16.3  
     steps:
-      - checkout  # 从 GitHub 拉取代码
+      - checkout 
       - run:
-          name: update-npm  # 更新 npm
+          name: update-npm  
           command: 'sudo npm install -g npm@5'
-      - restore_cache:  # 恢复缓存
+      - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
-          name: npm-install
+          name: install-npm
           command: npm install
       - run:
           name: test-run
