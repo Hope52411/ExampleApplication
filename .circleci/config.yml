@@ -17,14 +17,17 @@ jobs:
       - image: node:18  # ✅ Use an official and supported Node.js version
     steps:
       - checkout
+      - run:
+          name: Update npm
+          command: 'npm install -g npm@latest'  # ✅ Update to latest npm
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Install Dependencies
-          command: npm ci  # ✅ Faster and ensures consistent dependencies
+          command: npm install
       - run:
           name: Run Tests
-          command: npm test
+          command: npm run test
       - save_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
