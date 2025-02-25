@@ -2,7 +2,7 @@ version: 2.1
 
 workflows:
   version: 2
-  build:
+  build_and_deploy:
     jobs:
       - build:
           filters:
@@ -39,15 +39,18 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - ./node_modules
+
   deploy:
-  docker:
-    - image: circleci/node:22.1.0
-  steps:
-    - run:
-        name: deploy-application
-        command: |
-          ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS << 'EOF'
-            rm -rf ExampleApplication/
-            git clone https://github.com/Hope52411/ExampleApplication.git
-            source ExampleApplication/deploy.sh
-          EOF
+    docker:
+      - image: circleci/node:22.1.0
+    steps:
+      - checkout
+      - run:
+          name: Deploy Application
+          command: |
+            ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS << 'EOF'
+              rm -rf ExampleApplication/
+              git clone https://github.com/Hope52411/ExampleApplication.git
+              chmod +x ExampleApplication/deploy.sh
+              source ExampleApplication/deploy.sh
+            EOF
