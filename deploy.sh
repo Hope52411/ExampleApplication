@@ -13,8 +13,8 @@ cd ExampleApplication/
 
 # Install application dependencies
 npm install
-echo $PRIVATE_KEY > privatekey.pem
-echo $SERVER > server.crt
+printf "%s\n" "$PRIVATE_KEY" > privatekey.pem
+printf "%s\n" "$SERVER" > server.crt
 
 # Start the application with the process name example_app using pm2
-pm2 start ./bin/www --name example_app
+PORT=8443 pm2 start ./bin/www --name example_app
