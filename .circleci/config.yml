@@ -21,12 +21,12 @@ jobs:
   build:
     working_directory: ~/ExampleApplication-20250204
     docker:
-      - image: circleci/node:10.16.3
+      - image: node:22.1.0
     steps:
       - checkout
       - run:
           name: Update npm
-          command: 'sudo npm install -g npm@5'  
+          command: 'npm install -g npm@10.7.0'  
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
@@ -42,8 +42,9 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/node:10.16.3
+      - image: node:22.1.0
     steps:
+      - checkout
       - run:
           name: Deploy Application
           command: ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "export SERVER=\"$SERVER\"; export PRIVATE_KEY=\"$PRIVATE_KEY\"; rm -rf ExampleApplication/; git clone https://github.com/Hope52411/ExampleApplication.git; source ExampleApplication/deploy.sh"
