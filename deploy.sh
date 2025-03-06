@@ -16,46 +16,35 @@ sudo apt-get update -y
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
-# 4️⃣ 确保 npm 可用（如果 `apt` 安装的 `npm` 不能用，就用 `npm` 官方脚本安装）
-if ! command -v npm &> /dev/null
-then
-    echo "⚠️ npm 未正确安装，尝试手动安装..."
-    curl -L https://www.npmjs.com/install.sh | sudo bash
-fi
+# 4️⃣ 确保 npm 可用
+sudo npm install -g npm@latest
 
-# 5️⃣ 解决 `npm` 权限问题，确保全局安装时不会报 `EACCES`
-mkdir -p ~/.npm-global
-npm config set prefix '~/.npm-global'
-export PATH=~/.npm-global/bin:$PATH
-echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
-
-# 6️⃣ 确保 npm 是最新版本
-npm install -g npm@latest
-
-# 7️⃣ 安装 pm2（⚠️ 用 `sudo` 确保不会有权限错误）
+# 5️⃣ 确保 pm2 可用
 sudo npm install -g pm2
 
-# 8️⃣ 进入应用目录
+# 6️⃣ 进入应用目录
 cd ~/ExampleApplication
 
-# 9️⃣ 安装 npm 依赖
+# 7️⃣ 安装 npm 依赖
 npm install --legacy-peer-deps
 
-# 🔟 解决 npm 安全漏洞（⚠️ 避免影响 CircleCI 执行）
-if [ -z "$CI" ]; then
-  npm audit fix --force || true
-fi
+# 8️⃣ 解决 npm 安全漏洞（⚠️ 避免影响 CircleCI 执行）
+npm audit fix --force || true
 
-# 1️⃣1️⃣ 重新创建 HTTPS 证书文件
+# 9️⃣ 重新创建 HTTPS 证书文件
 echo "$PRIVATE_KEY" | sed 's/\\n/\n/g' > privatekey.pem
 echo "$SERVER" | sed 's/\\n/\n/g' > server.crt
 
-# 1️⃣2️⃣ 停止旧进程，启动新的进程
+# 🔟 停止旧进程，启动新的进程
 pm2 stop example_app || true
 pm2 restart example_app || pm2 start ./bin/www --name example_app
 
-# 1️⃣3️⃣ 持久化 PM2（防止服务器重启后丢失进程）
+# 1️⃣1️⃣ 持久化 PM2（防止服务器重启后丢失进程）
 pm2 save
-pm2 startup
+
+# 1️⃣2️⃣ 只有在 EC2 服务器上才运行 `pm2 startup`
+if [ -z "$CI" ]; then
+  sudo pm2 startup
+fi
 
 echo "✅ 部署完成！"
