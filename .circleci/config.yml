@@ -47,4 +47,11 @@ jobs:
       - checkout
       - run:
           name: Deploy Application
-          command: ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "export SERVER=\"$SERVER\"; export PRIVATE_KEY=\"$PRIVATE_KEY\"; rm -rf ExampleApplication/; git clone https://github.com/Hope52411/ExampleApplication.git; source ExampleApplication/deploy.sh"
+          command: |
+            ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS << 'EOF'
+              export SERVER="$(echo "$SERVER" | base64 --decode)"
+              export PRIVATE_KEY="$(echo "$PRIVATE_KEY" | base64 --decode)"
+              rm -rf ExampleApplication/
+              git clone https://github.com/Hope52411/ExampleApplication.git
+              source ExampleApplication/deploy.sh
+            EOF

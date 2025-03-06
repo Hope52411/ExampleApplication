@@ -32,8 +32,10 @@ function onError(error) {
     throw error;
   }
 
-  var bind = typeof server.address() === 'string' ? 'Pipe ' + server.address() : 'Port ' + server.address().port;
-
+  var bind = server ? (typeof server.address() === 'string' ? 'Pipe ' + server.address() : 'Port ' + server.address().port) : 'unknown';
+  app.set("port", https_port);
+  console.log(`HTTPS server is running on port ${https_port}`);
+  
   // Handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
