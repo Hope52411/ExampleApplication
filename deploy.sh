@@ -1,20 +1,27 @@
 #!/usr/bin/env bash
 
-sudo apt update && sudo apt install nodejs npm
+# 更新系统 & 安装 Node.js 和 npm（避免 nodejs 和 npm 依赖冲突）
+sudo apt update
+sudo apt install -y nodejs npm --fix-broken
 
-# Install pm2 which is a production process manager for Node.js with a built-in load balancer.
+# 安装 pm2（强制重新安装，防止损坏）
 sudo npm install -g pm2
 
-# stop any instance of our application running currently
-pm2 stop example_app
+# 确保旧的 pm2 进程被正确停止
+pm2 stop example_app || true
 
-# change directory into folder where application is downloaded
-cd ExampleApplication/
+# 进入应用目录
+cd ExampleApplication
 
-# Install application dependencies
-npm install
+# 确保 npm 依赖安装成功（避免 `peer dependencies` 失败）
+npm install --legacy-peer-deps
+# 写入 HTTPS 证书（确保环境变量正确解析）
 echo $PRIVATE_KEY > privatekey.pem
 echo $SERVER > server.crt
 
-# Start the application with the process name example_app using pm2
-pm2 start ./bin/www --name example_app
+# 启动或重启 pm2 进程
+pm2 restart example_app || pm2 start ./bin/www --name example_app
+
+# 持久化 PM2（防止服务器重启后应用丢失）
+pm2 save
+pm2 startup
