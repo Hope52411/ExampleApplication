@@ -25,6 +25,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+          version 28.0.1
       - run:
           name: Update npm
           command: 'npm install -g npm@10.7.0'  
@@ -44,7 +45,7 @@ jobs:
           name: docker-login
           command: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - run:
-          name: Duild Docker Image
+          name: Build Docker Image
           command: docker build -t $IMAGE_NAME:latest .
       - run:
           name: Publish Docker Image
