@@ -21,7 +21,7 @@ jobs:
   build:
     working_directory: ~/ExampleApplication-20250204
     docker:
-      - image: circleci/node:22.1.0
+      - image: circleci/node:22.1
     steps:
       - checkout
       - setup_remote_docker
@@ -52,7 +52,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/node:22.1.0
+      - image: circleci/node:22.1
     steps:
       - checkout
       - run:
