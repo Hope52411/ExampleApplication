@@ -17,4 +17,4 @@ echo $PRIVATE_KEY > privatekey.pem
 echo $SERVER > server.crt
 
 # Start the application with the process name example_app using pm2
-PORT=8443 pm2 start ./bin/www --name example_app
+pm2 start ./bin/www --name example_app
