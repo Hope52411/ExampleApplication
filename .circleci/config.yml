@@ -46,27 +46,13 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Deploy Application
-          command: |
-            ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS << 'EOF'
-              set -e  # 让脚本遇到错误立即退出
-              
-              echo "🔹 进入 EC2 服务器，开始部署..."
-              
-              # 删除旧应用
-              rm -rf ExampleApplication/
-              
-              # 克隆最新代码
-              git clone https://github.com/Hope52411/ExampleApplication.git
-              cd ExampleApplication
-              
-              # 确保环境变量正确传递
-              echo "$PRIVATE_KEY" | sed 's/\\n/\n/g' > privatekey.pem
-              echo "$SERVER" | sed 's/\\n/\n/g' > server.crt
+          name: Deploy Application - Connect to EC2
+          command: ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "rm -rf ExampleApplication && git clone https://github.com/Hope52411/ExampleApplication.git"
 
-              # 运行部署脚本
-              chmod +x deploy.sh
-              ./deploy.sh
-              
-              echo "✅ 部署完成！"
-            EOF
+      - run:
+          name: Deploy Application - Set up environment
+          command: ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "cd ExampleApplication && echo \"$PRIVATE_KEY\" | sed 's/\\n/\n/g' > privatekey.pem && echo \"$SERVER\" | sed 's/\\n/\n/g' > server.crt"
+
+      - run:
+          name: Deploy Application - Execute deploy script
+          command: ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "cd ExampleApplication && chmod +x deploy.sh && ./deploy.sh"
