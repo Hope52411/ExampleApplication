@@ -7,21 +7,20 @@
 var app = require('../app');
 var debug = require('debug')('phishsense:server');
 var http = require('http');
+var https = require('https');
+var fs = require('fs');
 
 /**
  * Normalize a port into a number, string, or false.
  */
 function normalizePort(val) {
   var port = parseInt(val, 10);
-
   if (isNaN(port)) {
     return val; // named pipe
   }
-
   if (port >= 0) {
     return port; // port number
   }
-
   return false;
 }
 
@@ -33,9 +32,9 @@ function onError(error) {
     throw error;
   }
 
-  var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+  var bind = typeof server.address() === 'string' ? 'Pipe ' + server.address() : 'Port ' + server.address().port;
 
-  // handle specific listen errors with friendly messages
+  // Handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges');
@@ -57,63 +56,56 @@ function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
   debug('Listening on ' + bind);
+  console.log('Server listening on ' + bind);
 }
 
-// Add HTTPS Section
-var fs = require('fs');
-var https = require('https');
+/**
+ * Set ports
+ */
 var port = normalizePort(process.env.PORT || '8080');
-var https_port = process.env.PORT_HTTPS || 8443;
-
-var options = {};
+var https_port = normalizePort(process.env.PORT_HTTPS || 8443);
+var server;
 
 if (process.env.ENV !== "DEV") {
-  var privatekey = fs.readFileSync('privatekey.pem', "utf8");
-  console.log(typeof privatekey);
-  var cert = fs.readFileSync('server.crt', "utf8");
+  // Read private key and certificate (Ensure these files exist)
+  try {
+    var privateKey = fs.readFileSync('privatekey.pem', "utf8");
+    var certificate = fs.readFileSync('server.crt', "utf8");
 
-  var header = "-----BEGIN PRIVATE KEY-----";
-  var footer = "-----END PRIVATE KEY-----";
-  console.log(privatekey.split(header));
-  privatekey = privatekey.split(header)[1];
-  privatekey = privatekey.split(footer)[0];
-  privatekey = header + "\n" + privatekey.replace(/ /g, "\n") + footer + "\n";
+    var options = {
+      key: privateKey,
+      cert: certificate
+    };
 
-  console.log(privatekey);
+    app.set("port", https_port);
 
-  var header = "-----BEGIN CERTIFICATE-----";
-  var footer = "-----END CERTIFICATE-----";
-  cert = cert.split(header)[1];
-  cert = cert.split(footer)[0];
-  cert = header + "\n" + cert.replace(/ /g, "\n") + footer + "\n";
+    /**
+     * Create HTTPS server.
+     */
+    server = https.createServer(options, app).listen(https_port, function () {
+      console.log('Server running securely on port ' + https_port);
+    });
 
-  var options = {
-    key: privatekey,
-    cert: cert
-  };
-  app.set("port", https_port);
+    /**
+     * Redirect HTTP to HTTPS
+     */
+    http.createServer(function (req, res) {
+      res.writeHead(301, { "Location": "https://" + req.headers['host'].split(':')[0] + ":" + https_port + req.url });
+      console.log("Redirecting HTTP request to >> ");
+      console.log("https://" + req.headers['host'].split(':')[0] + ":" + https_port + req.url);
+      res.end();
+    }).listen(port);
 
-  /* Create HTTPS server */
-  var server = https.createServer(options, app).listen(https_port, function () {
-    console.log('Magic happens on port ' + https_port);
-  });
-
-  /** Listen on provided port, on all network interfaces. */
-  server.on('error', onError);
-  server.on('listening', onListening);
-
-  // Redirect from http port to https
-  http.createServer(function (req, res) {
-    res.writeHead(301, { "Location": "https://" + req.headers['host'].replace(port, https_port) + req.url });
-    console.log("http request, will go to >> ");
-    console.log("https://" + req.headers['host'].replace(port, https_port) + req.url);
-    res.end();
-  }).listen(port);
+  } catch (err) {
+    console.error("Error reading SSL certificate or private key:", err.message);
+    process.exit(1);
+  }
 
 } else {
-  var server = http.createServer(app);
-
-  /** Listen on provided port, on all network interfaces. */
+  /**
+   * Create HTTP server.
+   */
+  server = http.createServer(app);
   server.listen(port);
   server.on('error', onError);
   server.on('listening', onListening);
