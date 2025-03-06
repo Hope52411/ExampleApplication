@@ -24,8 +24,8 @@ jobs:
       - image: node:22.1.0
     steps:
       - checkout
-      - setup_remote_docker
-          version 28.0.1
+      - setup_remote_docker:
+          version: 28.0.1
       - run:
           name: Update npm
           command: 'npm install -g npm@10.7.0'  
