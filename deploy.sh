@@ -1,27 +1,35 @@
 #!/usr/bin/env bash
+set -e  # 让脚本遇到错误立即退出
 
-# 更新系统 & 安装 Node.js 和 npm（避免 nodejs 和 npm 依赖冲突）
+echo "🚀 开始部署应用..."
+
+# 更新系统 & 解决 npm 依赖问题
 sudo apt update
+sudo apt remove -y nodejs npm
 sudo apt install -y nodejs npm --fix-broken
 
-# 安装 pm2（强制重新安装，防止损坏）
+# 重新安装 pm2（确保它没有损坏）
 sudo npm install -g pm2
 
-# 确保旧的 pm2 进程被正确停止
-pm2 stop example_app || true
-
 # 进入应用目录
-cd ExampleApplication
+cd ~/ExampleApplication
 
-# 确保 npm 依赖安装成功（避免 `peer dependencies` 失败）
+# 确保 npm 依赖能正确安装（避免 peer dependencies 问题）
 npm install --legacy-peer-deps
-# 写入 HTTPS 证书（确保环境变量正确解析）
-echo $PRIVATE_KEY > privatekey.pem
-echo $SERVER > server.crt
 
-# 启动或重启 pm2 进程
+# 解决 npm 安全漏洞（可选）
+npm audit fix --force
+
+# 重新创建 HTTPS 证书文件
+echo "$PRIVATE_KEY" | sed 's/\\n/\n/g' > privatekey.pem
+echo "$SERVER" | sed 's/\\n/\n/g' > server.crt
+
+# 停止旧进程，启动新的进程
+pm2 stop example_app || true
 pm2 restart example_app || pm2 start ./bin/www --name example_app
 
-# 持久化 PM2（防止服务器重启后应用丢失）
+# 持久化 PM2（防止服务器重启后丢失进程）
 pm2 save
 pm2 startup
+
+echo "✅ 部署完成！"
