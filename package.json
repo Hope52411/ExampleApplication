@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "test": "node_modules/.bin/mocha test/*.js",
-    "dev": "nodemon ./bin/www"
+    "dev": "export default ENV=DEV;nodemon ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -13,10 +13,10 @@
     "ejs": "~2.6.1",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
+    "mocha": "^11.1.0",
     "morgan": "~1.9.1"
   },
   "devDependencies": {
-    "mocha": "^11.1.0",
     "nodemon": "^2.0.7"
   }
 }
