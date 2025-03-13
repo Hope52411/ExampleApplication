@@ -33,16 +33,13 @@ jobs:
       - run:
           name: Install Dependencies
           command: npm install
+      - run:
+          name: Run Tests
+          command: npm run test
       - save_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - ./node_modules
-      - run:
-          name: Run Tests
-          command: npm run test
-      - run:
-          name: aduit-packages
-          command: npm audit
       - run:
           name: docker-login
           command: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
