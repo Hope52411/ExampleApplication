@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "mocha --reporter mocha-circleci-reporter test/*.js",
+    "test": "node_modules/.bin/mocha test/*.js",
     "dev": "nodemon ./bin/www"
   },
   "dependencies": {
@@ -13,7 +13,6 @@
     "ejs": "~2.6.1",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
-    "mocha-circleci-reporter": "0.0.3",
     "morgan": "~1.9.1"
   },
   "devDependencies": {
